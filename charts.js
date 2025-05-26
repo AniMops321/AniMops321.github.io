@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-  const googleScriptURL = "https://script.google.com/macros/s/AKfycbzVsDeMYr_G3gIwG9-56fOi8_8M35yYoy0Tgiy2vJPhYZSsY8R39ho7YmlE_pw5dje1pA/exec";
+  const googleScriptURL = "https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLipar2uB9HzCf7T1jaEIOs46-I0ZdlGbMYSYAGJdS0B_lTSjXZdcJ6Xi37rJTAuyjUMxYXCogxyQawl8gI4wFJnpBfp3VD6rfa_0_4i2Vm2KEX8qESdOZf2we0TsuvGCm_s0_N9xg0ckuAXxZNrCDv8cJjN1BTi4j0CjIM4hrs8mtiPjC_D7g4WWai9ukwoTzVMjutoVWzvL4s4fauJx74CXr71wr5fciW7fd4xwlaDHBoCT-0pJd7BQXBzHG9V1Ut85Qfu8qvQWHvI0m8xQwl4H2lhfbQt7WiJLzl8&lib=MhFWv9sayUGjmtRDpvnxqcNqHkzK3DmFw";
 
   const temperatureCtx = document.getElementById('temperatureChart').getContext('2d');
   const humidityCtx = document.getElementById('humidityChart').getContext('2d');
