@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <title>Метеостанция</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Подключаем стили через относительный путь -->
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
   <div class="container">
@@ -16,47 +16,53 @@
     </header>
     <main class="main-container">
       <div id="notification" class="hidden">Ошибка обновления данных</div>
-      
-      <!-- Секция текущих данных -->
       <section class="current-weather-section">
         <h2>Текущие данные</h2>
         <div class="weather-cards">
           <div class="card">
             <h3>Температура</h3>
-            <p id="temperature">-- °C</p>
+            <p id="temperature">{{ data.temperature }} °C</p>
           </div>
           <div class="card">
             <h3>Давление</h3>
-            <p id="pressure">-- hPa</p>
+            <p id="pressure">{{ data.pressure }} hPa</p>
           </div>
           <div class="card">
             <h3>Влажность</h3>
-            <p id="humidity">-- %</p>
+            <p id="humidity">{{ data.humidity }} %</p>
           </div>
           <div class="card">
             <h3>Освещённость</h3>
-            <p id="lux">-- лк</p>
+            <p id="lux">{{ data.lux }} лк</p>
           </div>
           <div class="card">
             <h3>Дождь</h3>
-            <p id="rain_probability">-- %</p>
+            <p id="rain_probability">{{ data.rain_probability }} %</p>
           </div>
           <div class="card">
             <h3>Обновлено</h3>
-            <p id="timestamp">--</p>
+            <p id="timestamp">{{ data.timestamp }}</p>
           </div>
         </div>
       </section>
-      
-      <!-- Секция прогноза -->
       <section class="forecast-section">
-        <h2>Прогноз на 5 измерений</h2>
+        <h2>Прогноз на 5 дней</h2>
         <div id="forecast-container" class="forecast-container">
-          <!-- Динамически заполняется -->
+          {% for day in forecast %}
+          <div class="forecast-card">
+            <img src="{{ day.icon }}" alt="Иконка погоды">
+            <div class="forecast-info">
+              <h3>{{ day.date }}</h3>
+              <p>Температура: <span>{{ day.temperature }}</span> °C</p>
+              <p>Влажность: <span>{{ day.humidity }}</span> %</p>
+              <p>Давление: <span>{{ day.pressure }}</span> hPa</p>
+              <p>Дождь: <span>{{ day.rain_probability }}</span> %</p>
+              <p>{{ day.description }}</p>
+            </div>
+          </div>
+          {% endfor %}
         </div>
       </section>
-      
-      <!-- Секция графиков -->
       <section class="charts-section">
         <h2>Графики</h2>
         <div class="charts-container">
@@ -65,8 +71,6 @@
           <canvas id="pressureChart"></canvas>
         </div>
       </section>
-      
-      <!-- Секция истории измерений -->
       <section class="history-section">
         <h2>История измерений</h2>
         <button id="download-history">Скачать данные (CSV)</button>
@@ -74,32 +78,34 @@
       </section>
     </main>
   </div>
-  
-  <!-- Глобальная переменная для прогнозных данных; будет обновляться в charts.js -->
   <script>
     window.forecastData = {
-      labels: [],
-      temperature: [],
-      humidity: [],
-      pressure: []
+      labels: [
+        {% for day in forecast %}"{{ day.date }}",{% endfor %}
+      ],
+      temperature: [
+        {% for day in forecast %}{{ day.temperature }},{% endfor %}
+      ],
+      humidity: [
+        {% for day in forecast %}{{ day.humidity }},{% endfor %}
+      ],
+      pressure: [
+        {% for day in forecast %}{{ day.pressure }},{% endfor %}
+      ]
     };
+    console.log("forecastData:", window.forecastData);
   </script>
-  
-  <!-- Подключаем необходимые библиотеки -->
   <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/moment"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
-  <!-- Основной скрипт с обновлением динамических данных и графиками -->
-  <script src="charts.js"></script>
-  
-  <!-- Обработчики кнопок -->
+  <script src="{{ url_for('static', filename='charts.js') }}"></script>
   <script>
     document.getElementById('theme-toggle').addEventListener('click', () => {
       document.body.classList.toggle('dark-mode');
     });
     document.getElementById('download-history').addEventListener('click', () => {
-      window.location.href = "download/history";
+      window.location.href = '/download/history';
     });
   </script>
 </body>
