@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Аналитика измерений</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Аналитика измерений</h1>
+      <p>Фильтрация по диапазону дат</p>
+    </header>
+    <main class="main-container">
+      <div class="filter-section">
+        <label for="start-date">Начало:</label>
+        <input type="date" id="start-date">
+        <label for="end-date">Конец:</label>
+        <input type="date" id="end-date">
+        <button id="apply-filter">Применить фильтр</button>
+      </div>
+      <div id="graph">{{ graph_html|safe }}</div>
+    </main>
+  </div>
+  <script>
+    document.getElementById('apply-filter').addEventListener('click', function() {
+      var startDate = document.getElementById('start-date').value;
+      var endDate = document.getElementById('end-date').value;
+      if (startDate && endDate) {
+        Plotly.relayout('graph', { 'xaxis.range': [startDate, endDate] });
+      }
+    });
+  </script>
+</body>
+</html>

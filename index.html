@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Метеостанция</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+  <div class="container">
+    <header class="header">
+      <h1>Метеостанция</h1>
+      <p>Точный прогноз от собственного датчика</p>
+      <button id="theme-toggle">Переключить тему</button>
+    </header>
+    <main class="main-container">
+      <div id="notification" class="hidden">Ошибка обновления данных</div>
+      <section class="current-weather-section">
+        <h2>Текущие данные</h2>
+        <div class="weather-cards">
+          <div class="card">
+            <h3>Температура</h3>
+            <p id="temperature">{{ data.temperature }} °C</p>
+          </div>
+          <div class="card">
+            <h3>Давление</h3>
+            <p id="pressure">{{ data.pressure }} hPa</p>
+          </div>
+          <div class="card">
+            <h3>Влажность</h3>
+            <p id="humidity">{{ data.humidity }} %</p>
+          </div>
+          <div class="card">
+            <h3>Освещённость</h3>
+            <p id="lux">{{ data.lux }} лк</p>
+          </div>
+          <div class="card">
+            <h3>Дождь</h3>
+            <p id="rain_probability">{{ data.rain_probability }} %</p>
+          </div>
+          <div class="card">
+            <h3>Обновлено</h3>
+            <p id="timestamp">{{ data.timestamp }}</p>
+          </div>
+        </div>
+      </section>
+      <section class="forecast-section">
+        <h2>Прогноз на 5 дней</h2>
+        <div id="forecast-container" class="forecast-container">
+          {% for day in forecast %}
+          <div class="forecast-card">
+            <img src="{{ day.icon }}" alt="Иконка погоды">
+            <div class="forecast-info">
+              <h3>{{ day.date }}</h3>
+              <p>Температура: <span>{{ day.temperature }}</span> °C</p>
+              <p>Влажность: <span>{{ day.humidity }}</span> %</p>
+              <p>Давление: <span>{{ day.pressure }}</span> hPa</p>
+              <p>Дождь: <span>{{ day.rain_probability }}</span> %</p>
+              <p>{{ day.description }}</p>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </section>
+      <section class="charts-section">
+        <h2>Графики</h2>
+        <div class="charts-container">
+          <canvas id="temperatureChart"></canvas>
+          <canvas id="humidityChart"></canvas>
+          <canvas id="pressureChart"></canvas>
+        </div>
+      </section>
+      <section class="history-section">
+        <h2>История измерений</h2>
+        <button id="download-history">Скачать данные (CSV)</button>
+        <canvas id="historyChart" height="400"></canvas>
+      </section>
+    </main>
+  </div>
+  <script>
+    window.forecastData = {
+      labels: [
+        {% for day in forecast %}"{{ day.date }}",{% endfor %}
+      ],
+      temperature: [
+        {% for day in forecast %}{{ day.temperature }},{% endfor %}
+      ],
+      humidity: [
+        {% for day in forecast %}{{ day.humidity }},{% endfor %}
+      ],
+      pressure: [
+        {% for day in forecast %}{{ day.pressure }},{% endfor %}
+      ]
+    };
+    console.log("forecastData:", window.forecastData);
+  </script>
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/moment"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment"></script>
+  <script src="{{ url_for('static', filename='charts.js') }}"></script>
+  <script>
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+    });
+    document.getElementById('download-history').addEventListener('click', () => {
+      window.location.href = '/download/history';
+    });
+  </script>
+</body>
+</html>
